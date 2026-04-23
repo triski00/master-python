@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}Formularios en Django{% endblock %}
+
+{% block content %}
+<h1>Formularios en Django</h1>
+
+{% if form.errors %}
+    <strong style="color:red;">Errores en el formulario</strong>
+{% endif %}
+
+<form action="{% url 'save' %}" method="POST">
+    {% csrf_token %}
+
+    <!-- Campo Título -->
+    <p>
+        <label
+            {% if form.title.errors %}
+                style="color:red;"
+            {% endif %}
+        >
+            {{ form.title.label }}
+        </label>
+        <br>
+        {{ form.title }}
+
+        {% for error in form.title.errors %}
+            <span style="color:red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+
+    <!-- Campo Contenido -->
+    <p>
+        <label>{{ form.content.label }}</label>
+        <br>
+        {{ form.content }}
+
+        {% for error in form.content.errors %}
+            <span style="color:red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+
+    <!-- Campo Publicado -->
+    <p>
+        <label>{{ form.public.label }}</label>
+        <br>
+        {{ form.public }}
+
+        {% for error in form.public.errors %}
+            <span style="color:red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+
+    <button type="submit">Guardar</button>
+</form>
+
+{% endblock %}

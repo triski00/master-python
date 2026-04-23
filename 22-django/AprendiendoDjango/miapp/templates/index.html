@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+
+{% block title %} {{title}} {% endblock %}
+
+{% block content %}
+
+
+<!-- Esto es un comentario en HTML -->
+
+{% comment "Esto es un comentario" %}
+<h1>Hola esto es un comentario</h1>
+{% endcomment %}
+
+<h1 class="title">{{title}}</h1>
+
+<p>{{mi_variable}}</p>
+
+{% if nombre %}
+
+     <p>{{nombre}}</p>
+{% endif %}  
+
+<h3>Listado de lenguajes de programacion:</h3>
+
+<ul>
+    {% for lenguaje in lenguajes %}
+        <li>{{forloop.counter}} {{lenguaje}}</li>
+        {% empty %}
+        <p>NO HAY LENGUAJES QUE MOSTRAR</P>
+        {% endfor %}
+</ul>
+
+{% include 'fecha-actual.html' %}
+
+ {% endblock %}

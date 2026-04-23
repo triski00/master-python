@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <title>
+        {% block title %}
+        <!--Titulo de cada pagina-->
+        {% endblock %}
+        | Mario Avila
+    </title>
+    
+    {% load static %}
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}" />
+
+</head>
+
+<body>
+
+    <!-- Cabezera de la Pagina -->
+     <header>
+        <div id="logotipo">
+            <!--Logo django-->
+            <img src="{% static 'images/logo.png' %}" />
+
+            <h1>Sitio web con Django</h1>
+        </div>
+     </header>
+
+     
+     
+    
+    
+<nav>
+    <ul class="dropdown">
+        <li><a href="{% url 'index' %}">Inicio</a></li>
+        <li><a href="{% url 'list_articles' %}">Categorías</a></li>
+        <li><a href="{% url 'hola_mundo' %}">Hola Mundo</a></li>
+
+        {% for page in pages %}
+            <li><a href="{% url 'page' page.slug %}">{{ page.title }}</a></li>
+        {% endfor %}
+    </ul>
+</nav>
+
+
+
+
+
+
+    
+
+    
+     </nav>
+     <div class="barra">
+          <span class="esquina-izquierda"></span>
+          <span class="relleno-barra"></span>
+          <span class="esquina-derecha"></span>
+
+    
+
+    <div id="content">
+
+        <div class="box">
+              
+        {% block content %}
+           <!--Codigo que viene de templates--> 
+           <strong>Contenido del bloque original!!!!</strong>
+        {% endblock %}
+
+        </div>
+      
+</div>
+    
+
+</body>
+
+<footer>
+   Master en python &copy; Mario Avila - {% now "DATE_FORMAT" %}
+
+</footer>
+
+
+</html>

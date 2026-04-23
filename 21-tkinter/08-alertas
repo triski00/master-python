@@ -1,0 +1,24 @@
+from tkinter import *
+from tkinter import messagebox as MessageBox
+
+ventana = Tk()
+ventana.geometry("250x150")
+ventana.config(bg="#ddd")
+
+def sacarAlerta():
+    MessageBox.showwarning("Alerta", "Hola soy el tio la vara")
+
+Button(ventana, text="Mostrar alerta!!", command=sacarAlerta).pack()
+
+def salir(nombre):
+    resultado = MessageBox.askquestion("Salir", "¿Continuar ejecutando la aplicación?")
+
+    if resultado != "yes":
+        MessageBox.showinfo("CIAO!!", f"Adios {nombre}")
+        ventana.destroy()
+
+Button(ventana, text="Salir!!", command=lambda: salir("Mario")).pack()
+
+ventana.mainloop()
+
+
