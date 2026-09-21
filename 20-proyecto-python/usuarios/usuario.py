@@ -1,5 +1,9 @@
-import hashlib
+from datetime import date
+
+import mysql.connector
+
 import usuarios.conexion as conexion
+import usuarios.seguridad as seguridad
 
 connect = conexion.conectar()
 database = connect[0]
@@ -15,38 +19,35 @@ class Usuario:
         self.password = password
 
     def registrar(self):
-        fecha = "01-01-2026"
+        # Fecha real de registro (el conector la convierte al formato AAAA-MM-DD)
+        fecha = date.today()
 
-        # Cifrar contraseña
-        cifrado = hashlib.sha256()
-        cifrado.update(self.password.encode('utf8'))
+        # Guardar la contraseña con hash y sal, nunca en claro
+        cifrado = seguridad.hashear_password(self.password)
 
         sql = "INSERT INTO usuarios VALUES(NULL, %s, %s, %s, %s, %s)"
-        usuario = (self.nombre, self.apellidos, self.email, cifrado.hexdigest(), fecha)
+        usuario = (self.nombre, self.apellidos, self.email, cifrado, fecha)
 
         try:
             cursor.execute(sql, usuario)
             database.commit()
             result = [cursor.rowcount, self]
-        except:
+        except mysql.connector.IntegrityError:
+            # El email ya existe (restricción UNIQUE). Otros errores no se
+            # ocultan: se propagan para poder verlos y corregirlos.
+            database.rollback()
             result = [0, self]
 
         return result
 
     def identificar(self):
-        # Consulta para comprobar si existe el usuario
-        sql = "SELECT * FROM usuarios WHERE email = %s AND password = %s"
+        # Se busca por email y la contraseña se verifica contra su hash con sal
+        sql = "SELECT * FROM usuarios WHERE email = %s"
+        cursor.execute(sql, (self.email,))
+        fila = cursor.fetchone()
 
-        # Cifrar contraseña
-        cifrado = hashlib.sha256()
-        cifrado.update(self.password.encode('utf8'))
+        # Columnas: id, nombre, apellidos, email, password, fecha
+        if fila and seguridad.verificar_password(self.password, fila[4]):
+            return fila
 
-        # Datos para la consulta
-        usuario = (self.email, cifrado.hexdigest())
-
-        cursor.execute(sql, usuario)
-        result = cursor.fetchone()
-
-        return result
-
-
+        return None

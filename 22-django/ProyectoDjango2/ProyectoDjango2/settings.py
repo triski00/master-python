@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
+
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +23,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-f6ou*lv-x1s%dvdduqocrnn28d6+f&fg_6ovkw55!n8_8_evlr'
+# La configuración sensible se lee de variables de entorno (no se guarda en el repositorio).
+#   DJANGO_DEBUG=1            -> modo desarrollo local
+#   DJANGO_SECRET_KEY=...     -> obligatoria si DJANGO_DEBUG no es 1
+#   DJANGO_ALLOWED_HOSTS=a,b  -> hosts permitidos cuando DEBUG está desactivado
+DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    if DEBUG:
+        # Clave de uso exclusivo para desarrollo local.
+        SECRET_KEY = 'django-insecure-solo-para-desarrollo-local'
+    else:
+        raise ImproperlyConfigured(
+            'Define la variable de entorno DJANGO_SECRET_KEY '
+            '(o DJANGO_DEBUG=1 para trabajar en local).'
+        )
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [h for h in os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') if h]
 
 
 # Application definition

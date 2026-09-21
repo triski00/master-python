@@ -6,17 +6,18 @@ un entero y un booleano y que imprima un mensaje
 segun el tipo de datos de cada variable. Usar funciones.
 """
 
-def traducirTipo(Tipo):
+def traducirTipo(tipo):
+    result = ""
     if tipo == list:
         result = "Lista"
     elif tipo == str:
         result = "CADENA DE TEXTO"
     elif tipo == int:
         result = "NUMERO ENTERO"
-    elif tipo == boll:
+    elif tipo == bool:
         result = "BOOLEANO"
 
-        return result
+    return result
 
 
 def comprobarTipado(dato, tipo):
@@ -28,7 +29,7 @@ def comprobarTipado(dato, tipo):
     else:
         result = "El tipo de dato no corresponde"
 
-        return result
+    return result
 
 
 
